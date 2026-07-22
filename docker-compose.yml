@@ -1,0 +1,10 @@
+services:
+  selfwishes:
+    build: .
+    ports:
+      - "6767:6767"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATA_DIR=/app/data
+    restart: unless-stopped
