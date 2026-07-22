@@ -14,7 +14,9 @@ Self-hosted Genshin Impact wish history tracker. Alternative to paimon.moe.
 ## Quick Start
 
 ```bash
-docker compose up -d
+git clone https://github.com/TripShuti/SELFwishes
+cd SELFwishes/
+docker compose up -d --build
 ```
 
 Open http://localhost:6767
