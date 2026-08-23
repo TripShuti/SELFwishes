@@ -4,7 +4,10 @@ services:
     ports:
       - "6767:6767"
     volumes:
-      - ./data:/app/data
+      - selfwishes_data:/app/data
     environment:
       - DATA_DIR=/app/data
     restart: unless-stopped
+
+volumes:
+  selfwishes_data:

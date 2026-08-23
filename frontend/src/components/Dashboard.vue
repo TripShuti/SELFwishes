@@ -217,4 +217,25 @@ watch(
   color: var(--heading);
   font-style: italic;
 }
+
+@media (max-width: 720px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .account-title {
+    font-size: 21px;
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .pity-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
 </style>

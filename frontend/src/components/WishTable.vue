@@ -313,6 +313,8 @@ function starClass(r) {
 }
 
 .table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   transition: opacity 0.2s ease;
 }
 
@@ -373,5 +375,28 @@ function starClass(r) {
   color: #6a5a3d;
   min-width: 60px;
   text-align: center;
+}
+
+@media (max-width: 720px) {
+  .wish-table {
+    font-size: 13px;
+    min-width: 560px;
+  }
+
+  .wish-table th,
+  .wish-table td {
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  .cell-time {
+    font-size: 12px;
+  }
+
+  .btn-page {
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
+  }
 }
 </style>

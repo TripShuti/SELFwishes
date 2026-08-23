@@ -85,4 +85,17 @@ function shortName(name) {
   font-size: 12px;
   opacity: 0.75;
 }
+
+@media (max-width: 720px) {
+  .banner-tabs {
+    margin-bottom: 16px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .tab {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+}
 </style>

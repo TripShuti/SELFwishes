@@ -215,4 +215,50 @@ a {
     0 4px 16px rgba(40, 55, 85, 0.25);
   padding: 20px;
 }
+
+@media (max-width: 720px) {
+  .header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .logo {
+    font-size: 17px;
+  }
+
+  .logo-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nav {
+    gap: 4px;
+  }
+
+  .nav a {
+    font-size: 13px;
+    padding: 4px 10px;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .main {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+}
 </style>

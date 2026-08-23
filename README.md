@@ -53,6 +53,29 @@ npm install
 npm run dev
 ```
 
+## Data & Backups
+
+Wish data lives in a named Docker volume `selfwishes_data` (SQLite at `/app/data/wishes.db` inside the container). It survives container rebuilds, `docker compose down` and even deleting the project folder — it is only removed by `docker volume rm selfwishes_data` or `docker system prune --volumes`.
+
+**Backup:**
+
+```bash
+docker run --rm -v selfwishes_data:/data alpine tar cz -C /data . > wishes-backup.tar.gz
+```
+
+**Restore:**
+
+```bash
+docker run --rm -i -v selfwishes_data:/data alpine sh -c "tar xz -C /data" < wishes-backup.tar.gz
+```
+
+**Migrate from an old bind-mount `./data` folder:**
+
+```bash
+docker volume create selfwishes_data
+docker run --rm -v selfwishes_data:/dest -v "$(pwd)/data":/src alpine sh -c "cp -a /src/. /dest/"
+```
+
 ## Configuration
 
 | Variable | Default | Description |

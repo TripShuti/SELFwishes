@@ -32,7 +32,7 @@
 
       <div v-if="loading" class="loading">Loading...</div>
 
-      <div v-if="result.length" class="compare-results">
+      <div v-if="result.length" class="compare-results table-scroll">
         <table class="compare-table">
           <thead>
             <tr>
@@ -278,5 +278,22 @@ function refresh() {
   padding: 40px;
   color: var(--heading);
   font-style: italic;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 720px) {
+  .compare-table {
+    font-size: 13px;
+    min-width: 640px;
+  }
+
+  .compare-controls {
+    padding: 12px;
+    gap: 10px;
+  }
 }
 </style>
