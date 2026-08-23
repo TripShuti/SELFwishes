@@ -64,9 +64,9 @@
       </table>
       </div>
       <div class="pagination" v-if="totalPages > 1">
-        <button class="btn-page" :disabled="page <= 1" @click="goTo(page - 1)">‹ Prev</button>
+        <button class="btn-page" :disabled="page <= 1" @click="goTo(page - 1)" aria-label="Previous page">‹</button>
         <span class="page-info">{{ page }} / {{ totalPages }}</span>
-        <button class="btn-page" :disabled="page >= totalPages" @click="goTo(page + 1)">Next ›</button>
+        <button class="btn-page" :disabled="page >= totalPages" @click="goTo(page + 1)" aria-label="Next page">›</button>
       </div>
     </template>
   </div>
@@ -349,12 +349,14 @@ function starClass(r) {
   color: #6a5a3d;
   border: 1px solid var(--border-strong);
   border-radius: 50%;
-  font-size: 17px;
+  font-size: 22px;
+  line-height: 1;
   font-family: inherit;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
   box-shadow: 0 1px 3px rgba(90, 70, 30, 0.2);
+  padding-bottom: 3px;
 }
 
 .btn-page:hover:not(:disabled) {
@@ -396,7 +398,7 @@ function starClass(r) {
   .btn-page {
     width: 40px;
     height: 40px;
-    font-size: 19px;
+    font-size: 26px;
   }
 }
 </style>
