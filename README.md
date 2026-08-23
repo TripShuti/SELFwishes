@@ -2,7 +2,9 @@
 
 Self-hosted Genshin Impact wish history tracker. Alternative to paimon.moe.
 
-<img width="1145" height="2704" alt="image" src="https://github.com/user-attachments/assets/2d3dddce-1798-4c18-98cb-62f6baf14ef7" />
+
+<img width="1145" height="1684" alt="2d3dddce-1798-4c18-98cb-62f6baf14ef7" src="https://github.com/user-attachments/assets/524ddf10-5876-4911-9c99-0ee585b0947c" />
+
 
 
 ## Features
