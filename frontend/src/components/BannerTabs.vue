@@ -42,12 +42,14 @@ function shortName(name) {
 <style scoped>
 .banner-tabs {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   margin-bottom: 24px;
-  background: var(--bg-secondary);
-  border-radius: var(--radius);
-  padding: 4px;
+  padding: 5px;
   overflow-x: auto;
+  background: rgba(43, 58, 87, 0.75);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 10px rgba(40, 55, 85, 0.3);
 }
 
 .tab {
@@ -55,33 +57,32 @@ function shortName(name) {
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
-  color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  color: #c4cddc;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 7px;
   white-space: nowrap;
   transition: all 0.2s;
 }
 
 .tab:hover {
-  color: var(--text-primary);
-  background: var(--bg-hover);
+  color: #e8d5a8;
+  background: rgba(232, 213, 168, 0.1);
 }
 
 .tab.active {
-  background: var(--accent);
-  color: white;
+  background: linear-gradient(180deg, #e6c88a 0%, #c9a25c 100%);
+  color: #3a2f1c;
+  border-color: #a8854a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .tab-count {
-  font-size: 11px;
-  opacity: 0.7;
-}
-
-.tab.active .tab-count {
-  opacity: 0.9;
+  font-size: 12px;
+  opacity: 0.75;
 }
 </style>

@@ -4,9 +4,9 @@
       <span class="filter-total">{{ wishesTotal }} wishes</span>
     </div>
 
-    <div v-if="loading" class="table-loading">Loading...</div>
-    <div v-else-if="!wishes.length" class="table-empty">No wishes found.</div>
+    <div v-if="!wishes.length && !loading" class="table-empty">No wishes found.</div>
     <template v-else>
+      <div :class="['table-wrap', { 'is-loading': loading }]">
       <table class="wish-table">
         <thead>
           <tr>
@@ -62,6 +62,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
       <div class="pagination" v-if="totalPages > 1">
         <button class="btn-page" :disabled="page <= 1" @click="goTo(page - 1)">‹ Prev</button>
         <span class="page-info">{{ page }} / {{ totalPages }}</span>
@@ -119,7 +120,7 @@ function sortIcon(field) {
 
 function formatTime(ts) {
   if (!ts) return '-'
-  return ts.slice(0, 16).replace('T', ' ')
+  return ts.slice(0, 19).replace('T', ' ')
 }
 
 function goTo(p) {
@@ -155,31 +156,40 @@ function starClass(r) {
   align-items: center;
   justify-content: flex-end;
   padding: 0 0 12px 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border-strong);
   margin-bottom: 4px;
 }
 
 .filter-total {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
+  font-style: italic;
 }
 
 .wish-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .wish-table th {
   text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  padding: 11px 14px;
+  background: linear-gradient(180deg, #ecdcb4 0%, #e3cfa0 100%);
+  border: 1px solid #d5c092;
+  color: #6a5a3d;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.3px;
   white-space: nowrap;
+}
+
+.wish-table th:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.wish-table th:last-child {
+  border-radius: 0 6px 6px 0;
 }
 
 .sortable {
@@ -188,49 +198,62 @@ function starClass(r) {
 }
 
 .sortable:hover {
-  color: var(--text-primary);
+  color: #3e3320;
 }
 
 .wish-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid rgba(42, 42, 74, 0.5);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: #8a8071;
 }
 
-.wish-table tr:hover {
-  background: var(--bg-hover);
+.wish-table tbody tr {
+  background: #faf5e6;
+}
+
+.wish-table tbody tr:nth-child(even) {
+  background: #f3ecd7;
+}
+
+.wish-table tbody tr:hover {
+  background: #eee1bf;
 }
 
 .row-5 {
-  background: rgba(251, 191, 36, 0.06) !important;
+  background: rgba(210, 154, 58, 0.14) !important;
 }
 
 .row-5:hover {
-  background: rgba(251, 191, 36, 0.1) !important;
+  background: rgba(210, 154, 58, 0.22) !important;
 }
 
 .row-4 {
-  background: rgba(168, 85, 247, 0.04) !important;
+  background: rgba(166, 115, 214, 0.1) !important;
+}
+
+.row-4:hover {
+  background: rgba(166, 115, 214, 0.18) !important;
 }
 
 .cell-time {
-  color: var(--text-secondary);
+  color: #988d7a;
   white-space: nowrap;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .cell-item {
-  font-weight: 500;
+  font-weight: 700;
 }
 
 .cell-banner {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
 .cell-pity {
-  font-family: 'SF Mono', 'Fira Code', monospace;
   text-align: center;
+  font-weight: 700;
+  color: #6a5a3d;
 }
 
 .rarity-5 {
@@ -242,7 +265,7 @@ function starClass(r) {
 }
 
 .rarity-3 {
-  color: #6b7280;
+  color: #7f766a;
 }
 
 .star-5 {
@@ -254,34 +277,48 @@ function starClass(r) {
 }
 
 .star-3 {
-  color: #6b7280;
+  color: #a29781;
 }
 
 .badge {
-  font-size: 11px;
-  padding: 2px 8px;
+  font-size: 12px;
+  padding: 2px 10px;
   border-radius: 10px;
-  font-weight: 600;
+  font-weight: 700;
+  border: 1px solid transparent;
 }
 
 .badge-win {
-  background: rgba(34, 197, 94, 0.15);
-  color: var(--green);
+  background: rgba(106, 154, 88, 0.15);
+  color: #4e7a3d;
+  border-color: rgba(106, 154, 88, 0.4);
 }
 
 .badge-lose {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--red);
+  background: rgba(199, 91, 74, 0.13);
+  color: #a54434;
+  border-color: rgba(199, 91, 74, 0.4);
 }
 
 .badge-guarantee {
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--blue);
+  background: rgba(74, 144, 217, 0.13);
+  color: #35699f;
+  border-color: rgba(74, 144, 217, 0.4);
 }
 
 .badge-muted {
-  background: rgba(144, 144, 176, 0.1);
+  background: rgba(150, 138, 115, 0.12);
   color: var(--text-secondary);
+  border-color: rgba(150, 138, 115, 0.3);
+}
+
+.table-wrap {
+  transition: opacity 0.2s ease;
+}
+
+.table-wrap.is-loading {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .table-loading,
@@ -289,42 +326,52 @@ function starClass(r) {
   padding: 40px;
   text-align: center;
   color: var(--text-secondary);
+  font-style: italic;
 }
 
 .pagination {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-  padding: 16px 0 0 0;
-  border-top: 1px solid var(--border);
-  margin-top: 4px;
+  gap: 18px;
+  padding: 18px 0 4px 0;
 }
 
 .btn-page {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 6px 14px;
-  font-size: 13px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fbf7ea;
+  color: #6a5a3d;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: 17px;
+  font-family: inherit;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s;
+  box-shadow: 0 1px 3px rgba(90, 70, 30, 0.2);
 }
 
 .btn-page:hover:not(:disabled) {
-  background: var(--bg-hover);
-  border-color: var(--accent);
+  background: linear-gradient(180deg, #e6c88a 0%, #c9a25c 100%);
+  border-color: #a8854a;
+  color: #3a2f1c;
 }
 
 .btn-page:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .page-info {
-  font-size: 13px;
-  color: var(--text-secondary);
-  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: #6a5a3d;
+  min-width: 60px;
+  text-align: center;
 }
 </style>

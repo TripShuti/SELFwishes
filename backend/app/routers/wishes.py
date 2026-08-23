@@ -35,8 +35,12 @@ async def list_wishes(
     total = (await db.execute(count_stmt)).scalar() or 0
 
     sort_col = getattr(Wish, sort_by, Wish.timestamp)
-    order = sort_col.asc() if sort_dir == "asc" else sort_col.desc()
-    stmt = stmt.order_by(order)
+    direction = sort_col.asc if sort_dir == "asc" else sort_col.desc
+    stmt = stmt.order_by(
+        direction(),
+        Wish.timestamp.asc() if sort_dir == "asc" else Wish.timestamp.desc(),
+        Wish.wish_id.asc() if sort_dir == "asc" else Wish.wish_id.desc(),
+    )
 
     offset = (page - 1) * size
     stmt = stmt.offset(offset).limit(size)
@@ -53,11 +57,15 @@ async def list_wishes(
 
 
 @router.get("/accounts/{account_id}/stats", response_model=DetailedStats)
-async def account_stats(account_id: int, db: AsyncSession = Depends(get_db)):
+async def account_stats(
+    account_id: int,
+    gacha_type: str | None = Query(None, description="Filter by uigf_gacha_type"),
+    db: AsyncSession = Depends(get_db),
+):
     account = await db.get(Account, account_id)
     if not account:
         raise HTTPException(404, "Account not found")
-    return await get_detailed_stats(db, account_id)
+    return await get_detailed_stats(db, account_id, gacha_type)
 
 
 @router.post("/compare", response_model=list[dict])

@@ -162,9 +162,11 @@ function refresh() {
 
 <style scoped>
 .page-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   margin-bottom: 24px;
+  color: var(--heading);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .compare-controls {
@@ -176,7 +178,8 @@ function refresh() {
   padding: 16px;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 0 0 3px rgba(58, 74, 107, 0.35), 0 4px 16px rgba(40, 55, 85, 0.25);
 }
 
 .checkbox-label {
@@ -185,37 +188,44 @@ function refresh() {
   gap: 6px;
   font-size: 14px;
   cursor: pointer;
+  color: var(--heading);
 }
 
 .compare-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 3px rgba(58, 74, 107, 0.35), 0 4px 16px rgba(40, 55, 85, 0.25);
 }
 
 .compare-table th {
   text-align: left;
-  padding: 12px;
-  border-bottom: 2px solid var(--border);
-  color: var(--text-secondary);
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 0.5px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, #ecdcb4 0%, #e3cfa0 100%);
+  border-bottom: 2px solid #d5c092;
+  color: #6a5a3d;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.3px;
 }
 
 .compare-table td {
-  padding: 12px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
 }
 
 .compare-table tbody tr:hover {
-  background: var(--bg-hover);
+  background: #eee1bf;
 }
 
 .banner-label {
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
+  color: var(--heading);
 }
 
 .banner-cell {
@@ -223,12 +233,13 @@ function refresh() {
 }
 
 .cell-stat {
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 4px;
+  color: var(--text-primary);
 }
 
 .cell-label {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin-right: 4px;
 }
@@ -238,18 +249,17 @@ function refresh() {
 }
 
 .cell-label.purple {
-  color: var(--purple);
+  color: #8a6a2f;
 }
 
 .section-row td {
-  background: var(--bg-card);
+  background: var(--bg-card-alt);
   font-weight: 700;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  letter-spacing: 0.3px;
   padding-top: 20px;
-  border-bottom: 2px solid var(--border);
-  color: var(--text-primary);
+  border-bottom: 2px solid var(--border-strong);
+  color: var(--heading);
 }
 
 .no-data {
@@ -259,12 +269,14 @@ function refresh() {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: var(--text-secondary);
+  color: var(--heading);
+  font-style: italic;
 }
 
 .loading {
   text-align: center;
   padding: 40px;
-  color: var(--text-secondary);
+  color: var(--heading);
+  font-style: italic;
 }
 </style>

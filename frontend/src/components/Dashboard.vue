@@ -100,6 +100,7 @@ function toggleView() {
 
 function onTabChange(tab) {
   activeTab.value = tab
+  loadStats()
   loadWishes()
 }
 
@@ -109,10 +110,16 @@ async function refresh() {
   loading.value = true
   await Promise.all([
     wishStore.loadSummary(store.activeAccountId),
-    wishStore.loadStats(store.activeAccountId),
+    loadStats(),
   ])
   loadWishes()
   loading.value = false
+}
+
+function loadStats() {
+  if (!store.activeAccountId) return Promise.resolve()
+  const gt = activeTab.value !== 'all' ? activeTab.value : undefined
+  return wishStore.loadStats(store.activeAccountId, gt)
 }
 
 function loadWishes(params = {}) {
@@ -145,15 +152,18 @@ watch(
 }
 
 .account-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   margin-bottom: 4px;
+  color: var(--heading);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .account-meta {
-  color: var(--text-secondary);
+  color: #6d6350;
   font-size: 13px;
   margin-right: 8px;
+  font-style: italic;
 }
 
 .pity-row {
@@ -168,15 +178,32 @@ watch(
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
   margin-bottom: 12px;
-  color: var(--text-primary);
+  color: var(--heading);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .empty-state {
   text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 3px rgba(58, 74, 107, 0.35), 0 4px 16px rgba(40, 55, 85, 0.25);
   padding: 80px 20px;
+}
+
+.empty-state h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  color: var(--heading);
+}
+
+.empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  font-style: italic;
 }
 
 .empty-icon {
@@ -184,24 +211,10 @@ watch(
   margin-bottom: 16px;
 }
 
-.empty-state h2 {
-  font-size: 20px;
-  margin-bottom: 8px;
-}
-
-.empty-state p {
-  color: var(--text-secondary);
-  margin-bottom: 20px;
-}
-
 .loading {
   text-align: center;
   padding: 60px;
-  color: var(--text-secondary);
-}
-
-.header-actions {
-  display: flex;
-  gap: 8px;
+  color: var(--heading);
+  font-style: italic;
 }
 </style>

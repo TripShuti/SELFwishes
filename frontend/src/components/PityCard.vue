@@ -120,16 +120,20 @@ function shortName(name) {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
 }
 
 .banner-name {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--heading);
 }
 
 .pulls-count {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
+  font-style: italic;
 }
 
 .pity-section {
@@ -139,13 +143,16 @@ function shortName(name) {
 .pity-label {
   display: flex;
   justify-content: space-between;
-  font-size: 13px;
+  align-items: baseline;
+  font-size: 14px;
   margin-bottom: 6px;
+  color: var(--heading);
 }
 
 .pity-value {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 18px;
+  color: var(--heading);
 }
 
 .pity-value.warning {
@@ -157,35 +164,37 @@ function shortName(name) {
 }
 
 .pity-bar {
-  height: 8px;
-  background: var(--bg-primary);
-  border-radius: 4px;
+  height: 10px;
+  background: #e6dcc2;
+  border: 1px solid var(--border);
+  border-radius: 5px;
   overflow: hidden;
 }
 
 .pity-fill {
   height: 100%;
-  background: var(--blue);
-  border-radius: 4px;
+  background: linear-gradient(180deg, #6ea6e0 0%, #4a90d9 100%);
+  border-radius: 5px;
   transition: width 0.3s ease;
 }
 
 .pity-fill.fill-warning {
-  background: var(--gold);
+  background: linear-gradient(180deg, #e3b45e 0%, #d29a3a 100%);
 }
 
 .pity-fill.fill-danger {
-  background: var(--red);
+  background: linear-gradient(180deg, #d4725e 0%, #c75b4a 100%);
 }
 
 .pity-fill-4 {
-  background: var(--purple);
+  background: linear-gradient(180deg, #c9a25c 0%, #a8854a 100%);
 }
 
 .pity-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
   margin-top: 4px;
+  font-style: italic;
 }
 
 .stats-row {
@@ -202,13 +211,14 @@ function shortName(name) {
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 
 .stat-value {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
+  color: var(--heading);
 }
 
 .stat-value.gold {
@@ -216,6 +226,6 @@ function shortName(name) {
 }
 
 .stat-value.purple {
-  color: var(--purple);
+  color: #8a6a2f;
 }
 </style>

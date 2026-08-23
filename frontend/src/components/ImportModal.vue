@@ -101,7 +101,7 @@ async function doImport() {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(25, 38, 60, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -109,9 +109,12 @@ async function doImport() {
 }
 
 .modal {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
+  box-shadow:
+    0 0 0 3px rgba(58, 74, 107, 0.5),
+    0 10px 40px rgba(20, 32, 55, 0.5);
   width: 520px;
   max-width: 90vw;
   max-height: 90vh;
@@ -123,20 +126,33 @@ async function doImport() {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border-strong);
+  background: linear-gradient(180deg, #ecdcb4 0%, #e3cfa0 100%);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .modal-header h2 {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 19px;
+  font-weight: 700;
+  color: #6a5a3d;
 }
 
 .btn-close {
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 24px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fbf7ea;
+  border: 1px solid var(--border-strong);
+  color: #6a5a3d;
+  font-size: 20px;
+  line-height: 1;
   cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-close:hover {
+  background: linear-gradient(180deg, #e6c88a 0%, #c9a25c 100%);
+  color: #3a2f1c;
 }
 
 .modal-body {
@@ -145,9 +161,10 @@ async function doImport() {
 
 .modal-desc {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 16px;
   line-height: 1.5;
+  font-style: italic;
 }
 
 .form-group {
@@ -156,15 +173,16 @@ async function doImport() {
 
 .form-group label {
   display: block;
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
+  font-size: 14px;
+  color: var(--heading);
+  font-weight: 700;
+  margin-bottom: 5px;
 }
 
 .input {
   width: 100%;
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   padding: 10px 12px;
   color: var(--text-primary);
@@ -176,11 +194,11 @@ async function doImport() {
 .input:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 162, 92, 0.25);
 }
 
 textarea.input {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .btn-full {
@@ -197,19 +215,20 @@ textarea.input {
 .alert {
   padding: 10px 14px;
   border-radius: var(--radius);
-  font-size: 13px;
+  font-size: 14px;
   margin-bottom: 14px;
+  border: 1px solid transparent;
 }
 
 .alert-error {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--red);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(199, 91, 74, 0.12);
+  color: #a54434;
+  border-color: rgba(199, 91, 74, 0.4);
 }
 
 .alert-success {
-  background: rgba(34, 197, 94, 0.15);
-  color: var(--green);
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(106, 154, 88, 0.13);
+  color: #4e7a3d;
+  border-color: rgba(106, 154, 88, 0.4);
 }
 </style>

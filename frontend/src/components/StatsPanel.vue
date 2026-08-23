@@ -65,16 +65,19 @@ function luckLabel(val, highLabel) {
 }
 
 .stat-header {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  font-style: italic;
 }
 
 .stat-big {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
+  color: var(--heading);
 }
 
 .stat-big.gold {
@@ -82,12 +85,13 @@ function luckLabel(val, highLabel) {
 }
 
 .stat-big.purple {
-  color: var(--purple);
+  color: #8a6a2f;
 }
 
 .stat-sub {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   margin-top: 4px;
+  font-style: italic;
 }
 </style>

@@ -24,8 +24,10 @@ export async function getAccountSummary(id) {
   return data
 }
 
-export async function getAccountStats(id) {
-  const { data } = await api.get(`/accounts/${id}/stats`)
+export async function getAccountStats(id, gachaType) {
+  const { data } = await api.get(`/accounts/${id}/stats`, {
+    params: gachaType ? { gacha_type: gachaType } : {},
+  })
   return data
 }
 

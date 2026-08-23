@@ -21,24 +21,27 @@ const store = useAccountStore()
 .account-select {
   background: var(--bg-card);
   color: var(--text-primary);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   padding: 6px 12px;
-  font-size: 13px;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 700;
   cursor: pointer;
-  max-width: 200px;
+  max-width: 220px;
 }
 
 .account-select:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201, 162, 92, 0.25);
 }
 
 .no-account {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .text-secondary {
-  color: var(--text-secondary);
+  color: #b9c3d6;
 }
 </style>

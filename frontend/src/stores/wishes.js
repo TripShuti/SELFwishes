@@ -21,9 +21,9 @@ export const useWishStore = defineStore('wishes', {
         this.loading = false
       }
     },
-    async loadStats(accountId) {
+    async loadStats(accountId, gachaType) {
       try {
-        this.stats = await getAccountStats(accountId)
+        this.stats = await getAccountStats(accountId, gachaType)
       } catch (e) {
         console.error('Failed to load stats', e)
       }

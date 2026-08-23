@@ -72,13 +72,13 @@ async def get_banner_summary(
 
 
 async def get_detailed_stats(
-    session: AsyncSession, account_id: int
+    session: AsyncSession, account_id: int, uigf_type: str | None = None
 ) -> DetailedStats:
-    stmt = (
-        select(Wish)
-        .where(Wish.account_id == account_id)
-        .order_by(Wish.timestamp.asc(), Wish.wish_id.asc())
-    )
+    stmt = select(Wish).where(Wish.account_id == account_id)
+
+    if uigf_type:
+        stmt = stmt.where(Wish.uigf_gacha_type == uigf_type)
+
     result = await session.execute(stmt)
     all_wishes = result.scalars().all()
 
@@ -98,18 +98,21 @@ async def get_detailed_stats(
     losses = sum(1 for w in five_stars if w.is_5050_win is False)
     total_5050 = wins + losses
 
-    pulls_by_month = await _get_pulls_by_month(session, account_id)
+    pity_cap_5 = PITY_HARD_5.get(uigf_type or "301", 90)
+    pity_cap_4 = PITY_HARD_4.get(uigf_type or "301", 10)
+
+    pulls_by_month = await _get_pulls_by_month(session, account_id, uigf_type)
 
     return DetailedStats(
         avg_pity_5=avg_pity_5,
         avg_pity_4=avg_pity_4,
         luckiness_5=(
-            avg_pity_5 / PITY_HARD_5.get("301", 90)
+            avg_pity_5 / pity_cap_5
             if avg_pity_5
             else None
         ),
         luckiness_4=(
-            avg_pity_4 / PITY_HARD_4.get("301", 10)
+            avg_pity_4 / pity_cap_4
             if avg_pity_4
             else None
         ),
@@ -123,11 +126,11 @@ async def get_detailed_stats(
 
 
 async def _get_pulls_by_month(
-    session: AsyncSession, account_id: int
+    session: AsyncSession, account_id: int, uigf_type: str | None = None
 ) -> list[dict]:
     from sqlalchemy import text
 
-    query = text("""
+    query = """
         SELECT
             strftime('%Y-%m', timestamp) as month,
             COUNT(*) as pulls,
@@ -135,10 +138,16 @@ async def _get_pulls_by_month(
             SUM(CASE WHEN rarity = 4 THEN 1 ELSE 0 END) as count_4
         FROM wishes
         WHERE account_id = :aid
-        GROUP BY month
-        ORDER BY month ASC
-    """)
-    result = await session.execute(query, {"aid": account_id})
+    """
+    params = {"aid": account_id}
+
+    if uigf_type:
+        query += " AND uigf_gacha_type = :gt"
+        params["gt"] = uigf_type
+
+    query += " GROUP BY month ORDER BY month ASC"
+
+    result = await session.execute(text(query), params)
     rows = result.fetchall()
     return [
         {
