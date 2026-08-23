@@ -55,25 +55,38 @@ npm run dev
 
 ## Data & Backups
 
-Wish data lives in a named Docker volume `selfwishes_data` (SQLite at `/app/data/wishes.db` inside the container). It survives container rebuilds, `docker compose down` and even deleting the project folder — it is only removed by `docker volume rm selfwishes_data` or `docker system prune --volumes`.
+The SQLite database lives on the host machine at `/opt/selfwishes/data/wishes.db` (bind-mounted to `/app/data` inside the container). It survives container rebuilds, `docker compose down`, and deleting the project folder.
 
 **Backup:**
 
 ```bash
-docker run --rm -v selfwishes_data:/data alpine tar cz -C /data . > wishes-backup.tar.gz
+cp /opt/selfwishes/data/wishes.db wishes-backup.db
 ```
 
-**Restore:**
+**Restore / drop in your own DB:**
 
 ```bash
-docker run --rm -i -v selfwishes_data:/data alpine sh -c "tar xz -C /data" < wishes-backup.tar.gz
+docker compose down
+cp wishes-backup.db /opt/selfwishes/data/wishes.db
+docker compose up -d
+```
+
+**Migrate from the old named volume (`selfwishes_data`):**
+
+```bash
+mkdir -p /opt/selfwishes/data
+docker run --rm -v selfwishes_data:/src -v /opt/selfwishes/data:/dest alpine sh -c "cp -a /src/. /dest/"
+docker compose up -d --build
+# once verified, remove the old volume:
+docker volume rm selfwishes_data
 ```
 
 **Migrate from an old bind-mount `./data` folder:**
 
 ```bash
-docker volume create selfwishes_data
-docker run --rm -v selfwishes_data:/dest -v "$(pwd)/data":/src alpine sh -c "cp -a /src/. /dest/"
+mkdir -p /opt/selfwishes/data
+cp -a ./data/. /opt/selfwishes/data/
+docker compose up -d --build
 ```
 
 ## Configuration
