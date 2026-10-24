@@ -1,5 +1,7 @@
 services:
   selfwishes:
+    image: selfwishes:latest
+    container_name: selfwishes
     build: .
     ports:
       - "6767:6767"

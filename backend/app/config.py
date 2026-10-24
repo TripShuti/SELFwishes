@@ -4,7 +4,7 @@ DATA_DIR = os.environ.get("DATA_DIR") or os.path.join(os.path.dirname(os.path.ab
 os.makedirs(DATA_DIR, exist_ok=True)
 DATABASE_URL = f"sqlite+aiosqlite:///{DATA_DIR}/wishes.db"
 
-HOYO_BASE_URL = "https://hk4e-api-os.hoyoverse.com/event/gacha_info/api/getGachaLog"
+HOYO_BASE_URL = "https://public-operation-hk4e-sg.hoyoverse.com/gacha_info/api/getGachaLog"
 HOYO_PAGE_SIZE = 20
 HOYO_REQUEST_DELAY = 0.5
 

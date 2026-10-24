@@ -1,8 +1,14 @@
+FROM python:3.12-slim AS extension-builder
+WORKDIR /build
+COPY browser-extension/ ./browser-extension/
+RUN python browser-extension/build.py
+
 FROM node:20-alpine AS frontend-builder
 WORKDIR /build
 COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm ci
 COPY frontend/ .
+COPY --from=extension-builder /build/frontend/public/extensions ./public/extensions
 RUN npm run build
 
 FROM python:3.12-slim

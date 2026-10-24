@@ -43,7 +43,7 @@ if static_dir.exists():
 
     @app.get("/{full_path:path}", include_in_schema=False)
     async def spa_fallback(full_path: str):
-        file = static_dir / full_path
-        if full_path and file.is_file():
+        file = (static_dir / full_path).resolve()
+        if full_path and file.is_relative_to(static_dir.resolve()) and file.is_file():
             return FileResponse(file)
         return FileResponse(static_dir / "index.html")

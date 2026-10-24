@@ -77,6 +77,7 @@ def dedup_wishes(
         wid = str(w.get("id", ""))
         if wid not in existing_ids:
             deduped.append(w)
+            existing_ids.add(wid)
             new_count += 1
     return deduped, new_count
 

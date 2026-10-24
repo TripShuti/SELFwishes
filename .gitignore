@@ -7,3 +7,9 @@ __pycache__/
 *.pyc
 .env
 backend/static/
+
+browser-extension/dist/
+frontend/public/extensions/
+
+.hoyo-sessions.json*
+.hoyo-session-*

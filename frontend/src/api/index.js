@@ -52,3 +52,13 @@ export async function healthCheck() {
   const { data } = await api.get('/health')
   return data
 }
+
+export async function getHoyoConnections() {
+  const { data } = await api.get('/import/hoyoverse')
+  return data
+}
+
+export async function importFromHoyo(uid) {
+  const { data } = await api.post('/import/hoyoverse', { uid }, { timeout: 600000 })
+  return data
+}

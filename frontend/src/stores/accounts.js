@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { fetchAccounts, createAccount, deleteAccount } from '../api'
+import { fetchAccounts, createAccount, deleteAccount, getHoyoConnections } from '../api'
 
 export const useAccountStore = defineStore('accounts', {
   state: () => ({
     accounts: [],
+    importVersion: 0,
     activeAccountId: null,
     loading: false,
   }),
@@ -16,9 +17,14 @@ export const useAccountStore = defineStore('accounts', {
     async loadAccounts() {
       this.loading = true
       try {
-        this.accounts = await fetchAccounts()
+        const [accounts, connection] = await Promise.all([
+          fetchAccounts(),
+          getHoyoConnections().catch(() => ({ roles: [] })),
+        ])
+        this.accounts = accounts
         if (!this.activeAccountId && this.accounts.length > 0) {
-          this.activeAccountId = this.accounts[0].id
+          const connectedUids = new Set(connection.roles.map(role => role.uid))
+          this.activeAccountId = (this.accounts.find(account => connectedUids.has(account.uid)) || this.accounts[0]).id
         } else if (this.accounts.length === 0) {
           this.activeAccountId = null
         } else if (!this.accounts.find((a) => a.id === this.activeAccountId)) {

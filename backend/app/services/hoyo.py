@@ -1,5 +1,4 @@
 import asyncio
-import re
 from urllib.parse import urlparse, parse_qs
 
 import httpx
@@ -12,7 +11,7 @@ class HoyoAPIError(Exception):
 
 
 def parse_auth_url(url: str) -> dict:
-    if not url.startswith("http"):
+    if urlparse(url).scheme not in ("http", "https"):
         raise HoyoAPIError("Invalid URL")
 
     parsed = urlparse(url)
@@ -26,7 +25,15 @@ def parse_auth_url(url: str) -> dict:
     game_biz = query.get("game_biz", [None])[0]
     lang = query.get("lang", ["en"])[0]
 
-    base_url = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+    # The pasted URL only provides parameters; never send keys to its host.
+    if game_biz not in (None, "hk4e_global", "hk4e_cn"):
+        raise HoyoAPIError("This is not a Genshin Impact history URL")
+    chinese = game_biz == "hk4e_cn" or parsed.hostname in (
+        "hk4e-api.mihoyo.com", "public-operation-hk4e.mihoyo.com",
+        "webstatic.mihoyo.com", "operation-webstatic.mihoyo.com",
+    )
+    base_url = ("https://public-operation-hk4e.mihoyo.com/gacha_info/api/getGachaLog"
+                if chinese else HOYO_BASE_URL)
 
     return {
         "authkey": authkey,
@@ -66,7 +73,10 @@ async def fetch_gacha_page(
         params["game_biz"] = game_biz
 
     api_url = base_url or HOYO_BASE_URL
-    resp = await client.get(api_url, params=params, timeout=30)
+    try:
+        resp = await client.get(api_url, params=params, timeout=30)
+    except httpx.HTTPError:
+        raise HoyoAPIError("Cannot reach the wish history API. Try again later.") from None
 
     if resp.status_code != 200:
         raise HoyoAPIError(f"API returned status {resp.status_code}")
@@ -74,14 +84,11 @@ async def fetch_gacha_page(
     try:
         data = resp.json()
     except Exception:
-        text = resp.text[:500]
-        raise HoyoAPIError(f"Invalid API response: {text}")
+        raise HoyoAPIError("Invalid wish history API response") from None
 
     if data.get("retcode") != 0:
-        msg = data.get("message", "Unknown error")
-        if "authkey" in msg.lower() or data.get("retcode") == -100:
-            raise HoyoAPIError(f"Authkey error: {msg}")
-        raise HoyoAPIError(f"API error (retcode={data.get('retcode')}): {msg}")
+        raise HoyoAPIError(f"Wish history API rejected the request (code {data.get('retcode')}). "
+                           "Try again or reconnect your HoYoverse account.")
 
     result = data.get("data")
     if not result:
@@ -98,6 +105,7 @@ async def fetch_all_wishes(
     base_url: str | None = None,
     game_biz: str | None = None,
     on_progress=None,
+    existing_ids: set[str] | None = None,
 ) -> list[dict]:
     all_wishes = []
     page = 1
@@ -114,14 +122,24 @@ async def fetch_all_wishes(
 
             region = region or result.get("region", region)
 
+            encountered_existing = False
             for item in items:
+                if existing_ids is not None and str(item["id"]) in existing_ids:
+                    encountered_existing = True
+                    break
                 item["gacha_type"] = str(item.get("gacha_type", gacha_type))
+                item["region"] = region
                 all_wishes.append(item)
 
             if on_progress:
                 on_progress(gacha_type, page, len(items))
 
-            end_id = items[-1]["id"]
+            if encountered_existing:
+                break
+            next_id = items[-1]["id"]
+            if next_id == end_id:
+                raise HoyoAPIError("Wish history pagination did not advance. Try again later.")
+            end_id = next_id
             page += 1
             await asyncio.sleep(HOYO_REQUEST_DELAY)
 

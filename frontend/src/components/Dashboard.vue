@@ -9,7 +9,7 @@
 
     <template v-else>
       <div class="dashboard-header">
-        <div>
+        <div class="account-heading">
           <h1 class="account-title">{{ store.activeAccount.name }}</h1>
           <span class="account-meta">UID: {{ store.activeAccount.uid }}</span>
           <span v-if="store.activeAccount.region" class="account-meta">
@@ -17,6 +17,7 @@
           </span>
         </div>
         <div class="header-actions">
+          <HoyoImport :uid="store.activeAccount.uid" compact />
           <button class="btn btn-ghost" @click="toggleView">
             {{ showTableOnly ? 'Summary View' : 'Table View' }}
           </button>
@@ -65,6 +66,7 @@ import { ref, watch, computed } from 'vue'
 import { useAccountStore } from '../stores/accounts'
 import { useWishStore } from '../stores/wishes'
 import ImportModal from './ImportModal.vue'
+import HoyoImport from './HoyoImport.vue'
 import BannerTabs from './BannerTabs.vue'
 import PityCard from './PityCard.vue'
 import WishTable from './WishTable.vue'
@@ -133,7 +135,7 @@ function loadWishes(params = {}) {
 }
 
 watch(
-  () => store.activeAccountId,
+  () => [store.activeAccountId, store.importVersion],
   () => refresh(),
   { immediate: true }
 )
@@ -148,7 +150,19 @@ watch(
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 24px;
   margin-bottom: 24px;
+}
+
+.account-heading { flex-shrink: 0; }
+.header-actions > .btn { flex-shrink: 0; }
+.header-actions {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .account-title {
@@ -218,14 +232,32 @@ watch(
   font-style: italic;
 }
 
+@media (max-width: 1000px) {
+  .dashboard-header { flex-wrap: wrap; }
+  .header-actions { flex-basis: 100%; }
+}
+
 @media (max-width: 720px) {
+  .header-actions { width: 100%; flex-direction: column; align-items: stretch; }
+  .header-actions > .btn { align-self: flex-start; }
   .dashboard-header {
     flex-direction: column;
     gap: 10px;
     margin-bottom: 16px;
   }
 
-  .account-title {
+  .account-heading { flex-shrink: 0; }
+.header-actions > .btn { flex-shrink: 0; }
+.header-actions {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.account-title {
     font-size: 21px;
   }
 

@@ -6,9 +6,12 @@
       <div class="modal">
         <div class="modal-header">
           <h2>Import Wish History</h2>
-          <button class="btn-close" @click="close">&times;</button>
+          <button class="btn-close" :disabled="loading" @click="close">&times;</button>
         </div>
         <div class="modal-body">
+          <HoyoImport @imported="emit('imported', $event)" />
+          <hr class="import-divider" />
+          <h3>Import with a history URL</h3>
           <p class="modal-desc">
             Paste your wish history URL below. You can get it from
             <a href="https://paimon.moe/wish/import" target="_blank">this guide</a>.
@@ -55,6 +58,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import HoyoImport from './HoyoImport.vue'
 import { importWishes } from '../api'
 import { useAccountStore } from '../stores/accounts'
 
@@ -68,6 +72,7 @@ const result = ref(null)
 const store = useAccountStore()
 
 function close() {
+  if (loading.value) return
   open.value = false
   url.value = ''
   accountName.value = ''
@@ -84,6 +89,9 @@ async function doImport() {
   try {
     const r = await importWishes(url.value.trim(), accountName.value.trim() || undefined)
     result.value = r
+    await store.loadAccounts()
+    store.setActive(r.account_id)
+    store.importVersion++
     emit('imported', r)
     setTimeout(close, 2500)
   } catch (e) {
@@ -153,6 +161,12 @@ async function doImport() {
 .btn-close:hover {
   background: linear-gradient(180deg, #e6c88a 0%, #c9a25c 100%);
   color: #3a2f1c;
+}
+
+.import-divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
 }
 
 .modal-body {

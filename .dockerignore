@@ -6,3 +6,9 @@ data
 __pycache__
 *.pyc
 .git
+
+browser-extension/dist
+frontend/public/extensions
+
+**/.hoyo-sessions.json*
+**/.hoyo-session-*
