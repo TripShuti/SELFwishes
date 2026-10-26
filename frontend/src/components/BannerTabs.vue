@@ -4,7 +4,7 @@
       :class="['tab', { active: activeTab === 'all' }]"
       @click="$emit('update:activeTab', 'all')"
     >
-      All
+      All banners
     </button>
     <button
       v-for="b in banners"
@@ -21,7 +21,7 @@
 <script setup>
 defineProps({
   banners: { type: Array, default: () => [] },
-  activeTab: { type: String, default: 'all' },
+  activeTab: { type: String, default: 'all' }
 })
 
 defineEmits(['update:activeTab'])
@@ -31,7 +31,7 @@ const nameMap = {
   'Weapon Event Wish': 'Weapon',
   'Standard Wish': 'Standard',
   "Beginners' Wish": 'Beginners',
-  'Chronicled Wish': 'Chronicled',
+  'Chronicled Wish': 'Chronicled'
 }
 
 function shortName(name) {
@@ -43,59 +43,46 @@ function shortName(name) {
 .banner-tabs {
   display: flex;
   gap: 6px;
-  margin-bottom: 24px;
   padding: 5px;
+  margin-bottom: 20px;
   overflow-x: auto;
-  background: rgba(43, 58, 87, 0.75);
-  border: 1px solid var(--accent);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 2px 10px rgba(40, 55, 85, 0.3);
+  background: #e3ebf1;
+  border: 1px solid #d8e2e9;
+  border-radius: 10px;
+  scrollbar-width: thin;
 }
-
 .tab {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 8px 16px;
-  border: 1px solid transparent;
+  padding: 10px 18px;
+  min-height: 42px;
+  border: 0;
   background: transparent;
-  color: #c4cddc;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
+  color: #52657c;
+  font-size: 13px;
+  font-weight: 600;
   border-radius: 7px;
   white-space: nowrap;
-  transition: all 0.2s;
 }
-
 .tab:hover {
-  color: #e8d5a8;
-  background: rgba(232, 213, 168, 0.1);
+  background: #ffffff70;
 }
-
 .tab.active {
-  background: linear-gradient(180deg, #e6c88a 0%, #c9a25c 100%);
-  color: #3a2f1c;
-  border-color: #a8854a;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  color: var(--heading);
+  background: var(--bg-card);
+  box-shadow:
+    0 1px 4px #1d355515,
+    inset 0 -2px var(--accent);
 }
-
 .tab-count {
-  font-size: 12px;
-  opacity: 0.75;
+  font-size: 11px;
+  font-weight: 400;
 }
-
-@media (max-width: 720px) {
-  .banner-tabs {
-    margin-bottom: 16px;
-    padding: 4px;
-    gap: 4px;
-  }
-
+@media (max-width: 760px) {
   .tab {
-    padding: 7px 12px;
-    font-size: 13px;
+    padding: 10px 14px;
   }
 }
 </style>

@@ -1,6 +1,10 @@
 <template>
   <div class="account-switcher" v-if="store.hasAccounts">
-    <select v-model="store.activeAccountId" class="account-select">
+    <select
+      v-model="store.activeAccountId"
+      class="account-select"
+      aria-label="Active account"
+    >
       <option v-for="a in store.accounts" :key="a.id" :value="a.id">
         {{ a.name }} ({{ a.uid || 'no UID' }})
       </option>
@@ -22,13 +26,16 @@ const store = useAccountStore()
   background: var(--bg-card);
   color: var(--text-primary);
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  padding: 6px 12px;
-  font-size: 14px;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
   font-family: inherit;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
-  max-width: 220px;
+  max-width: 230px;
+  min-height: 32px;
+  width: 100%;
+  text-overflow: ellipsis;
 }
 
 .account-select:focus {
@@ -37,8 +44,20 @@ const store = useAccountStore()
   box-shadow: 0 0 0 3px rgba(201, 162, 92, 0.25);
 }
 
+@media (min-width: 601px) and (max-width: 760px) {
+  .account-select {
+    max-width: 160px;
+  }
+}
+
+@media (max-width: 600px) {
+  .account-select {
+    max-width: none;
+  }
+}
+
 .no-account {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .text-secondary {

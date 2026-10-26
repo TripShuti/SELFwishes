@@ -66,11 +66,11 @@ async def connect(cookies: dict, expected_uid: str | None = None) -> list[dict]:
     roles = [{"uid": str(role["game_uid"]), "region": role["region"],
               "nickname": role.get("nickname", "")} for role in data.get("list", [])]
     if not roles:
-        raise HoyoAPIError("No Genshin characters found for this HoYoverse account.")
+        raise HoyoAPIError("No Genshin profiles found for this HoYoverse account.")
     if expected_uid and not any(role["uid"] == expected_uid for role in roles):
         signed_in = ", ".join(role["uid"] for role in roles)
         raise HoyoAPIError(f"Your browser is signed in for UID {signed_in}, not {expected_uid}. "
-                           "Switch HoYoverse accounts or select the matching character in SELFwishes.")
+                           "Switch HoYoverse accounts or select the matching Genshin profile (UID) in SELFwishes.")
     sessions = load_sessions()
     # Reconnecting an account also removes roles no longer returned by HoYoverse.
     sessions = {uid: session for uid, session in sessions.items()

@@ -9,16 +9,8 @@
 
     <div v-else>
       <div class="compare-controls">
-        <label
-          v-for="a in store.accounts"
-          :key="a.id"
-          class="checkbox-label"
-        >
-          <input
-            type="checkbox"
-            :value="a.id"
-            v-model="selectedIds"
-          />
+        <label v-for="a in store.accounts" :key="a.id" class="checkbox-label">
+          <input type="checkbox" :value="a.id" v-model="selectedIds" />
           {{ a.name }}
         </label>
         <button
@@ -88,7 +80,9 @@
               <td class="banner-label">Win Rate</td>
               <td v-for="r in result" :key="r.account.id">
                 <template v-if="r.stats?.known_5050">
-                  {{ ((r.stats.wins_5050 / r.stats.total_5050) * 100).toFixed(1) }}%
+                  {{
+                    ((r.stats.wins_5050 / r.stats.total_5050) * 100).toFixed(1)
+                  }}%
                 </template>
                 <span v-else class="no-data">-</span>
               </td>
@@ -122,18 +116,18 @@ import { compareAccounts } from '../api'
 import ImportModal from './ImportModal.vue'
 
 const store = useAccountStore()
-const selectedIds = ref(store.accounts.filter((_, i) => i < 3).map(a => a.id))
+const selectedIds = ref(store.accounts.filter((_, i) => i < 3).map((a) => a.id))
 const loading = ref(false)
 const result = ref([])
 
 const allBannerTypes = ['301', '302', '200', '100', '500']
 
 const bannerNames = {
-  '100': "Beginners' Wish",
-  '200': 'Standard Wish',
-  '301': 'Character Event Wish',
-  '302': 'Weapon Event Wish',
-  '500': 'Chronicled Wish',
+  100: "Beginners' Wish",
+  200: 'Standard Wish',
+  301: 'Character Event Wish',
+  302: 'Weapon Event Wish',
+  500: 'Chronicled Wish'
 }
 
 function bannerName(gt) {
@@ -179,7 +173,7 @@ function refresh() {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-strong);
-  box-shadow: 0 0 0 3px rgba(58, 74, 107, 0.35), 0 4px 16px rgba(40, 55, 85, 0.25);
+  box-shadow: 0 3px 12px #20395205;
 }
 
 .checkbox-label {
@@ -198,15 +192,15 @@ function refresh() {
   background: var(--bg-card);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 0 3px rgba(58, 74, 107, 0.35), 0 4px 16px rgba(40, 55, 85, 0.25);
+  box-shadow: 0 3px 12px #20395205;
 }
 
 .compare-table th {
   text-align: left;
   padding: 12px 14px;
-  background: linear-gradient(180deg, #ecdcb4 0%, #e3cfa0 100%);
-  border-bottom: 2px solid #d5c092;
-  color: #6a5a3d;
+  background: var(--bg-card-alt);
+  border-bottom: 1px solid var(--border);
+  color: var(--heading);
   font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.3px;
@@ -219,7 +213,7 @@ function refresh() {
 }
 
 .compare-table tbody tr:hover {
-  background: #eee1bf;
+  background: var(--bg-hover);
 }
 
 .banner-label {
@@ -249,7 +243,7 @@ function refresh() {
 }
 
 .cell-label.purple {
-  color: #8a6a2f;
+  color: var(--purple);
 }
 
 .section-row td {

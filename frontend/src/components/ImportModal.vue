@@ -2,11 +2,28 @@
   <div>
     <button class="btn btn-primary" @click="open = true">+ Import</button>
 
-    <div v-if="open" class="modal-overlay" @click.self="close">
-      <div class="modal">
+    <div
+      v-if="open"
+      class="modal-overlay"
+      @click.self="close"
+      @keydown.esc="close"
+    >
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="import-title"
+      >
         <div class="modal-header">
-          <h2>Import Wish History</h2>
-          <button class="btn-close" :disabled="loading" @click="close">&times;</button>
+          <h2 id="import-title">Import wish history</h2>
+          <button
+            class="btn-close"
+            aria-label="Close import"
+            :disabled="loading"
+            @click="close"
+          >
+            &times;
+          </button>
         </div>
         <div class="modal-body">
           <HoyoImport @imported="emit('imported', $event)" />
@@ -14,13 +31,15 @@
           <h3>Import with a history URL</h3>
           <p class="modal-desc">
             Paste your wish history URL below. You can get it from
-            <a href="https://paimon.moe/wish/import" target="_blank">this guide</a>.
+            <a href="https://paimon.moe/wish/import" target="_blank"
+              >this guide</a
+            >.
           </p>
 
           <div v-if="error" class="alert alert-error">{{ error }}</div>
           <div v-if="result" class="alert alert-success">
-            Imported {{ result.new_wishes }} new wishes for {{ result.account_name }}
-            (UID: {{ result.uid }})
+            Imported {{ result.new_wishes }} new wishes for
+            {{ result.account_name }} (UID: {{ result.uid }})
           </div>
 
           <div class="form-group">
@@ -87,7 +106,10 @@ async function doImport() {
   result.value = null
 
   try {
-    const r = await importWishes(url.value.trim(), accountName.value.trim() || undefined)
+    const r = await importWishes(
+      url.value.trim(),
+      accountName.value.trim() || undefined
+    )
     result.value = r
     await store.loadAccounts()
     store.setActive(r.account_id)
@@ -95,7 +117,8 @@ async function doImport() {
     emit('imported', r)
     setTimeout(close, 2500)
   } catch (e) {
-    error.value = e.response?.data?.detail || 'Import failed. Check the URL and try again.'
+    error.value =
+      e.response?.data?.detail || 'Import failed. Check the URL and try again.'
   } finally {
     loading.value = false
   }
@@ -120,9 +143,7 @@ async function doImport() {
   background: var(--bg-card);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
-  box-shadow:
-    0 0 0 3px rgba(58, 74, 107, 0.5),
-    0 10px 40px rgba(20, 32, 55, 0.5);
+  box-shadow: 0 20px 80px rgba(20, 32, 55, 0.25);
   width: 520px;
   max-width: 90vw;
   max-height: 90vh;
@@ -134,15 +155,15 @@ async function doImport() {
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 2px solid var(--border-strong);
-  background: linear-gradient(180deg, #ecdcb4 0%, #e3cfa0 100%);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card-alt);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .modal-header h2 {
   font-size: 19px;
   font-weight: 700;
-  color: #6a5a3d;
+  color: var(--heading);
 }
 
 .btn-close {
@@ -151,7 +172,7 @@ async function doImport() {
   border-radius: 50%;
   background: #fbf7ea;
   border: 1px solid var(--border-strong);
-  color: #6a5a3d;
+  color: var(--heading);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;

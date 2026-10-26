@@ -1,12 +1,12 @@
 <template>
   <div v-if="stats" class="stats-grid">
     <div class="card stat-card">
-      <div class="stat-header">Total Pulls</div>
+      <div class="stat-header">Total wishes</div>
       <div class="stat-big">{{ stats.total_pulls }}</div>
     </div>
     <div class="card stat-card">
       <div class="stat-header">Avg 5★ Pity</div>
-      <div class="stat-big gold">
+      <div class="stat-big">
         {{ stats.avg_pity_5?.toFixed(1) || '-' }}
       </div>
       <div class="stat-sub" v-if="stats.luckiness_5">
@@ -15,7 +15,7 @@
     </div>
     <div class="card stat-card">
       <div class="stat-header">Avg 4★ Pity</div>
-      <div class="stat-big purple">
+      <div class="stat-big">
         {{ stats.avg_pity_4?.toFixed(1) || '-' }}
       </div>
       <div class="stat-sub" v-if="stats.luckiness_4">
@@ -24,10 +24,10 @@
     </div>
     <div class="card stat-card" v-if="stats.known_5050">
       <div class="stat-header">50/50 Record</div>
-      <div class="stat-big">{{ stats.wins_5050 }}W / {{ stats.losses_5050 }}L</div>
-      <div class="stat-sub">
-        {{ winRate }}% win rate
+      <div class="stat-big">
+        {{ stats.wins_5050 }}W / {{ stats.losses_5050 }}L
       </div>
+      <div class="stat-sub">{{ winRate }}% win rate</div>
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  stats: { type: Object, default: null },
+  stats: { type: Object, default: null }
 })
 
 const winRate = computed(() => {
@@ -55,43 +55,43 @@ function luckLabel(val, highLabel) {
 <style scoped>
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
-
 .stat-card {
-  text-align: center;
+  position: relative;
+  padding: 20px 24px;
 }
-
 .stat-header {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
-  letter-spacing: 0.3px;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border);
-  font-style: italic;
+  margin-bottom: 7px;
 }
-
 .stat-big {
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.3;
+  font-weight: 650;
   color: var(--heading);
+  letter-spacing: -0.8px;
+  font-variant-numeric: tabular-nums;
 }
-
-.stat-big.gold {
-  color: var(--gold);
-}
-
-.stat-big.purple {
-  color: #8a6a2f;
-}
-
 .stat-sub {
-  font-size: 13px;
-  color: var(--text-secondary);
-  margin-top: 4px;
-  font-style: italic;
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 6px;
+}
+@media (max-width: 760px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-card {
+    padding: 16px;
+  }
+  .stat-big {
+    font-size: clamp(22px, 6.5vw, 27px);
+  }
 }
 </style>

@@ -1,18 +1,24 @@
 # SELFwishes
 
-Self-hosted Genshin Impact wish history tracker with manual browser-based imports,
-PS5 cross-save support, pity statistics, and multiple accounts.
+Self-hosted Genshin Impact wish history tracker with browser-based imports,
+pity statistics, and multiple accounts.
 
-<img width="1145" height="1684" alt="2d3dddce-1798-4c18-98cb-62f6baf14ef7" src="https://github.com/user-attachments/assets/524ddf10-5876-4911-9c99-0ee585b0947c" />
+![SELFwishes desktop dashboard with banner pity, statistics, and item icons](docs/screenshots/dashboard-desktop.png)
+
+<details>
+<summary>Mobile dashboard</summary>
+
+<img src="docs/screenshots/dashboard-mobile.png" width="320" alt="SELFwishes mobile dashboard with compact navigation, banner cards, and wish history" />
+
+</details>
 
 ## Features
 
 - Import directly from a signed-in HoYoverse browser session, without installing the game on PC.
-- Support PS5 progress linked to a global HoYoverse account.
 - Update manually from the browser or a saved server connection; no scheduled updates.
 - Keep existing history, deduplicate wishes, and show new wish counts by banner.
 - Track character, weapon, standard, beginner, and Chronicled Wish statistics and pity.
-- Switch between accounts, compare statistics, and browse a sortable, paginated wish table.
+- Switch between accounts, compare statistics, and search, filter, sort, and paginate wish history.
 - Use the responsive dashboard on desktop or mobile.
 - Keep importing with a game history URL as an alternative.
 
@@ -35,8 +41,9 @@ SSH connection, or local Python helper is needed for the browser workflow.
 ## Connect your browser
 
 The connector runs in the browser where you sign in to HoYoverse. SELFwishes can
-run on that same computer or on a separate home server. For PS5, use the HoYoverse
-account linked to your PSN progress and select its matching Genshin UID.
+run on that same computer or on a separate home server. If you play on PS5, sign in
+with the HoYoverse account linked to your PSN account and select its matching
+Genshin UID when importing.
 
 ### 1. Install the connector
 
@@ -74,9 +81,10 @@ additionally checks the exact approved origin, including its scheme and port.
 ### 3. Sign in and update
 
 1. Sign in at [HoYoverse Account](https://account.hoyoverse.com/) in the same browser
-   and profile. Use the account associated with the character you want to import.
-2. Open SELFwishes and select that character's account, or use **Import** to connect
-   another HoYoverse account.
+   and browser profile as SELFwishes. Use the HoYoverse login linked to the Genshin
+   UID whose wish history you want to import.
+2. Open SELFwishes and click **Import**. If saved Genshin profiles are listed,
+   select the profile with the UID you want to update.
 3. Click **Update from browser**. The connector sends the selected session cookies
    to your server, which obtains a fresh wish-history key and imports new wishes.
 4. Check the result panel: it shows the number of **new wishes**, the UID, check
@@ -110,7 +118,7 @@ To remove a saved connection while keeping imported wishes:
 docker exec selfwishes python -m app.connect_hoyo disconnect YOUR_GENSHIN_UID
 ```
 
-Disconnect each associated UID if one HoYoverse account has several characters.
+Disconnect each associated UID if one HoYoverse account has several Genshin profiles.
 Removing the server copy does not revoke any copies of the same session held
 elsewhere.
 
@@ -254,6 +262,35 @@ The connector source is in `browser-extension/shared`; `browser-extension/build.
 creates unpacked packages under `browser-extension/dist` and downloadable ZIPs
 under `frontend/public/extensions`. Generated packages, runtime databases, and
 session files are excluded from Git.
+
+## Dashboard and item icons
+
+The dashboard includes responsive banner pity cards, summary statistics, and a
+wish history with server-side item search and rarity filtering. On phones, history
+rows become cards with item icons, pity, date, and 50/50 results. Sorting and
+pagination work in both layouts.
+
+Character and weapon icons are bundled locally under `frontend/public/icons/items`;
+there are no external image requests in the dashboard. The catalog matches item
+IDs and falls back to translated names for older imports that lack IDs. Unknown
+items use a rarity-colored placeholder. Images load lazily as they enter view.
+The initial 367 PNGs occupy about 24.5 MiB; a page only requests its visible icons.
+
+Sources: [genshin-db](https://github.com/theBowja/genshin-db) for IDs, names, and
+image filenames; [Enka Network](https://github.com/EnkaNetwork/API-docs/blob/master/docs/gi/api.md#icons-and-images)
+for game images. Artwork belongs to HoYoverse. Catalog attribution and license
+are included in `frontend/public/icons/`.
+
+Refresh icons when new items are released (Node 20+ and tar required):
+
+```bash
+node scripts/update_item_icons.mjs
+# Or explicitly select a newer genshin-db package version:
+node scripts/update_item_icons.mjs 5.2.14
+```
+
+The generated catalog and images are committed assets; ordinary Docker builds
+do not need access to the image CDN or the full genshin-db package.
 
 ## Tech stack
 

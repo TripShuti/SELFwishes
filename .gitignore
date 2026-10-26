@@ -13,3 +13,6 @@ frontend/public/extensions/
 
 .hoyo-sessions.json*
 .hoyo-session-*
+
+# Temporary Vite config bundles
+frontend/vite.config.*.timestamp-*.mjs

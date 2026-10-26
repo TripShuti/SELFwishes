@@ -77,6 +77,7 @@ class DetailedStats(BaseModel):
 
 class WishOut(BaseModel):
     id: int
+    item_id: str = ""
     gacha_type: str
     uigf_gacha_type: str
     item_name: str

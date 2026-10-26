@@ -10,19 +10,15 @@
     <template v-else>
       <div class="dashboard-header">
         <div class="account-heading">
-          <h1 class="account-title">{{ store.activeAccount.name }}</h1>
+          <h1 class="account-name">{{ store.activeAccount.name }}</h1>
           <span class="account-meta">UID: {{ store.activeAccount.uid }}</span>
           <span v-if="store.activeAccount.region" class="account-meta">
             &middot; {{ store.activeAccount.region }}
           </span>
         </div>
-        <div class="header-actions">
-          <HoyoImport :uid="store.activeAccount.uid" compact />
-          <button class="btn btn-ghost" @click="toggleView">
-            {{ showTableOnly ? 'Summary View' : 'Table View' }}
-          </button>
-        </div>
       </div>
+
+      <StatsPanel v-if="!loading" :stats="wishStore.stats" />
 
       <BannerTabs
         :banners="wishStore.summary?.banners || []"
@@ -33,26 +29,24 @@
       <div v-if="loading" class="loading">Loading...</div>
 
       <template v-if="!loading">
-        <div v-if="!showTableOnly" class="summary-view">
-          <div class="pity-row">
-            <PityCard
-              v-for="b in visibleBanners"
-              :key="b.gacha_type"
-              :banner="b"
-            />
-          </div>
-
-          <StatsPanel :stats="wishStore.stats" />
+        <div class="pity-row">
+          <PityCard
+            v-for="b in visibleBanners"
+            :key="b.gacha_type"
+            :banner="b"
+          />
         </div>
 
         <div class="wishes-section">
-          <h3 class="section-title">
-            {{ activeTab === 'all' ? 'All Wishes' : bannerTabName(activeTab) }}
-          </h3>
           <WishTable
+            :key="`${store.activeAccountId}-${activeTab}-${store.importVersion}`"
+            :title="
+              activeTab === 'all' ? 'Wish history' : bannerTabName(activeTab)
+            "
             :wishes="wishStore.wishes"
             :wishes-total="wishStore.wishesTotal"
             :loading="wishStore.loading"
+            :error="wishStore.wishesError"
             @load="loadWishes"
           />
         </div>
@@ -66,7 +60,6 @@ import { ref, watch, computed } from 'vue'
 import { useAccountStore } from '../stores/accounts'
 import { useWishStore } from '../stores/wishes'
 import ImportModal from './ImportModal.vue'
-import HoyoImport from './HoyoImport.vue'
 import BannerTabs from './BannerTabs.vue'
 import PityCard from './PityCard.vue'
 import WishTable from './WishTable.vue'
@@ -76,14 +69,13 @@ const store = useAccountStore()
 const wishStore = useWishStore()
 const loading = ref(false)
 const activeTab = ref('all')
-const showTableOnly = ref(false)
 
 const bannerLabels = {
-  '100': "Beginners' Wish",
-  '200': 'Standard Wish',
-  '301': 'Character Event',
-  '302': 'Weapon Event',
-  '500': 'Chronicled Wish',
+  100: "Beginners' Wish",
+  200: 'Standard Wish',
+  301: 'Character Event',
+  302: 'Weapon Event',
+  500: 'Chronicled Wish'
 }
 
 function bannerTabName(gt) {
@@ -96,10 +88,6 @@ const visibleBanners = computed(() => {
   return banners.filter((b) => b.gacha_type === activeTab.value)
 })
 
-function toggleView() {
-  showTableOnly.value = !showTableOnly.value
-}
-
 function onTabChange(tab) {
   activeTab.value = tab
   loadStats()
@@ -110,10 +98,7 @@ async function refresh() {
   if (!store.activeAccountId) return
   activeTab.value = 'all'
   loading.value = true
-  await Promise.all([
-    wishStore.loadSummary(store.activeAccountId),
-    loadStats(),
-  ])
+  await Promise.all([wishStore.loadSummary(store.activeAccountId), loadStats()])
   loadWishes()
   loading.value = false
 }
@@ -130,7 +115,9 @@ function loadWishes(params = {}) {
     sort_by: 'timestamp',
     sort_dir: 'desc',
     ...params,
-    gacha_type: params.gacha_type || (activeTab.value !== 'all' ? activeTab.value : undefined),
+    gacha_type:
+      params.gacha_type ||
+      (activeTab.value !== 'all' ? activeTab.value : undefined)
   })
 }
 
@@ -142,132 +129,68 @@ watch(
 </script>
 
 <style scoped>
-.dashboard {
-  min-height: 60vh;
-}
-
 .dashboard-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
-
-.account-heading { flex-shrink: 0; }
-.header-actions > .btn { flex-shrink: 0; }
-.header-actions {
-  flex: 1;
-  min-width: 0;
+.account-heading {
   display: flex;
+  align-items: baseline;
   flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 12px;
+  gap: 4px 12px;
+  min-width: 0;
 }
-
-.account-title {
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: var(--heading);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+.account-name {
+  font-size: 18px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
 }
-
 .account-meta {
-  color: #6d6350;
-  font-size: 13px;
-  margin-right: 8px;
-  font-style: italic;
+  font-size: 12px;
+  color: var(--text-secondary);
 }
-
 .pity-row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
 }
-
 .wishes-section {
   margin-top: 24px;
 }
-
-.section-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--heading);
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-}
-
 .empty-state {
   text-align: center;
   background: var(--bg-card);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 0 0 3px rgba(58, 74, 107, 0.35), 0 4px 16px rgba(40, 55, 85, 0.25);
   padding: 80px 20px;
 }
-
 .empty-state h2 {
-  font-size: 22px;
-  margin-bottom: 8px;
-  color: var(--heading);
+  font:
+    700 28px Georgia,
+    serif;
+  margin-bottom: 12px;
 }
-
 .empty-state p {
   color: var(--text-secondary);
-  margin-bottom: 20px;
-  font-style: italic;
+  margin-bottom: 24px;
 }
-
 .empty-icon {
   font-size: 48px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
-
 .loading {
   text-align: center;
   padding: 60px;
-  color: var(--heading);
-  font-style: italic;
+  color: var(--text-secondary);
 }
-
-@media (max-width: 1000px) {
-  .dashboard-header { flex-wrap: wrap; }
-  .header-actions { flex-basis: 100%; }
+@media (max-width: 760px) {
+  .pity-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
 }
-
-@media (max-width: 720px) {
-  .header-actions { width: 100%; flex-direction: column; align-items: stretch; }
-  .header-actions > .btn { align-self: flex-start; }
-  .dashboard-header {
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .account-heading { flex-shrink: 0; }
-.header-actions > .btn { flex-shrink: 0; }
-.header-actions {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.account-title {
-    font-size: 21px;
-  }
-
-  .section-title {
-    font-size: 16px;
-  }
-
+@media (max-width: 360px) {
   .pity-row {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
 }
 </style>

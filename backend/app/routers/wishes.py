@@ -16,6 +16,8 @@ router = APIRouter(prefix="/api", tags=["wishes"])
 async def list_wishes(
     account_id: int = Query(..., description="Account ID"),
     gacha_type: str | None = Query(None, description="Filter by uigf_gacha_type"),
+    search: str | None = Query(None, max_length=120),
+    rarity: int | None = Query(None, ge=3, le=5),
     page: int = Query(1, ge=1),
     size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("timestamp", pattern="^(timestamp|rarity|item_name|item_type|pity_5|pity_4|uigf_gacha_type)$"),
@@ -30,6 +32,11 @@ async def list_wishes(
 
     if gacha_type:
         stmt = stmt.where(Wish.uigf_gacha_type == gacha_type)
+
+    if search and search.strip():
+        stmt = stmt.where(Wish.item_name.icontains(search.strip(), autoescape=True))
+    if rarity is not None:
+        stmt = stmt.where(Wish.rarity == rarity)
 
     count_stmt = select(func.count()).select_from(stmt.subquery())
     total = (await db.execute(count_stmt)).scalar() or 0

@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import { getAccountSummary, getAccountStats, getWishes, importWishes } from '../api'
+import {
+  getAccountSummary,
+  getAccountStats,
+  getWishes,
+  importWishes
+} from '../api'
 
 export const useWishStore = defineStore('wishes', {
   state: () => ({
@@ -9,6 +14,8 @@ export const useWishStore = defineStore('wishes', {
     wishesTotal: 0,
     loading: false,
     importResult: null,
+    wishesError: '',
+    wishesRequest: 0
   }),
   actions: {
     async loadSummary(accountId) {
@@ -29,15 +36,22 @@ export const useWishStore = defineStore('wishes', {
       }
     },
     async loadWishes(accountId, params = {}) {
+      const request = ++this.wishesRequest
       this.loading = true
+      this.wishesError = ''
       try {
         const result = await getWishes(accountId, params)
+        if (request !== this.wishesRequest) return
         this.wishes = result.items
         this.wishesTotal = result.total
       } catch (e) {
+        if (request !== this.wishesRequest) return
+        this.wishes = []
+        this.wishesTotal = 0
+        this.wishesError = 'Could not load wish history. Please try again.'
         console.error('Failed to load wishes', e)
       } finally {
-        this.loading = false
+        if (request === this.wishesRequest) this.loading = false
       }
     },
     async doImport(url, accountName) {
@@ -45,6 +59,6 @@ export const useWishStore = defineStore('wishes', {
       const result = await importWishes(url, accountName)
       this.importResult = result
       return result
-    },
-  },
+    }
+  }
 })
